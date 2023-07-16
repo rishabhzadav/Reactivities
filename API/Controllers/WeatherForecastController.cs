@@ -1,9 +1,13 @@
+//using Microsoft.AspNetCore.Mvc;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+
+// ControllerBase is controller class without view support
 public class WeatherForecastController : ControllerBase
 {
     private static readonly string[] Summaries = new[]
