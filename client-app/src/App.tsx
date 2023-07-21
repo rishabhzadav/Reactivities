@@ -24,7 +24,7 @@ function App() {
       <List>
         {
           activities.map((activity: any) => {
-            return (<List.Item key={activity.name}> {activity.title}</List.Item>)
+            return (<List.Item key={activity.name}> {activity.title}</List.Item >)
           })
         }
       </List>
