@@ -5,9 +5,10 @@ import { activity } from "../../../app/models/activity";
 interface Props {
     activity: activity | undefined;
     FormClose: () => void;
-    CreateOrEdit : (activity : activity) => void;
+    CreateOrEdit: (activity: activity) => void;
+    submitting: boolean;
 }
-export default function ActivityForm({ activity: selectedActivity, FormClose , CreateOrEdit }: Props) {
+export default function ActivityForm({ activity: selectedActivity, FormClose, CreateOrEdit, submitting }: Props) {
 
     const initialState = selectedActivity ?? {
         id: "",
@@ -33,8 +34,8 @@ export default function ActivityForm({ activity: selectedActivity, FormClose , C
     console.log(`activity state is ${activity.category}`);
     // console.log(activity.category);
     function handleSubmit() {
-       // console.log(activity);
-       CreateOrEdit(activity);
+        // console.log(activity);
+        CreateOrEdit(activity);
 
     }
     function handleInputChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
@@ -50,10 +51,10 @@ export default function ActivityForm({ activity: selectedActivity, FormClose , C
                     <Form.Input placeholder="Title" value={activity.title} name='title' onChange={handleInputChange} />
                     <Form.TextArea placeholder="Description" value={activity.description} name="description" onChange={handleInputChange} />
                     <Form.Input placeholder="Catergory" value={activity.category} name='category' onChange={handleInputChange} />
-                    <Form.Input placeholder="Date" value={activity.date} name='date' onChange={handleInputChange} />
+                    <Form.Input type="date" placeholder="Date" value={activity.date} name='date' onChange={handleInputChange} />
                     <Form.Input placeholder="City" value={activity.city} name='city' onChange={handleInputChange} />
                     <Form.Input placeholder="Venue" value={activity.venue} name='venue' onChange={handleInputChange} />
-                    <Button floated="right" positive content='Submit' type="submit" />
+                    <Button loading={submitting} floated="right" positive content='Submit' type="submit" />
                     <Button onClick={() => FormClose()} floated="right" content='Cancel' />
                 </Form>
             </Segment>
