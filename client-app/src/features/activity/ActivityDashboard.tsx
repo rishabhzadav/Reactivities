@@ -4,23 +4,24 @@ import { activity } from '../../app/models/activity';
 import ActivityList from './ActivityList';
 import ActivityDetails from './details/ActivityDetails';
 import ActivityForm from './form/ActivityForm';
+import { useStore } from '../../app/stores/store';
+import { observer } from 'mobx-react-lite';
 
 // creating inerface to access the props in the desired format 
 interface Props {
-    activities: activity[];
-    selectedActivity: activity | undefined;
-    selectActivity: (id: string) => void;
-    cancelActivity: () => void;
-    CreateOrEdit: (activity: activity) => void
-    DeleteActivity: (id: string) => void;
-    editMode: boolean;
-    FormOpen: (id?: string) => void;
-    FormClose: () => void;
-    submitting : boolean;
+    //activities: activity[];
+    // selectedActivity: activity | undefined;
+    //selectActivity: (id: string) => void;
+    // CreateOrEdit: (activity: activity) => void
+    //DeleteActivity: (id: string) => void;
+    // editMode: boolean;
+    //FormOpen: (id?: string) => void;
+    //FormClose: () => void;
+    //submitting: boolean;
 }
-export default function ActivityDashboard({ activities, selectedActivity, selectActivity, cancelActivity, CreateOrEdit, DeleteActivity, 
-    editMode, FormOpen, FormClose , submitting }: Props) {
-
+function ActivityDashboard() {
+    const { activityStore } = useStore();
+    const { selectedActivity, editMode } = activityStore;
 
     return (
         <>
@@ -33,16 +34,15 @@ export default function ActivityDashboard({ activities, selectedActivity, select
                             })
                         }
                     </List> */}
-                    <ActivityList activities={activities} selectActivity={selectActivity} cancelActivity={cancelActivity}
-                        DeleteActivity={DeleteActivity} submitting ={submitting}/>
+                    <ActivityList />
                 </GridColumn>
                 <GridColumn width={6}>
                     {
                         selectedActivity && !editMode &&
-                        <ActivityDetails activity={selectedActivity} cancelActivity={cancelActivity} FormOpen={FormOpen} FormClose={FormClose} />
+                        <ActivityDetails activity={selectedActivity} />
                     }
                     {editMode &&
-                        <ActivityForm activity={selectedActivity} FormClose={FormClose} CreateOrEdit={CreateOrEdit} submitting = {submitting} />}
+                        <ActivityForm />}
                 </GridColumn>
 
             </Grid>
@@ -50,3 +50,5 @@ export default function ActivityDashboard({ activities, selectedActivity, select
         </>
     );
 }
+
+export default observer(ActivityDashboard)

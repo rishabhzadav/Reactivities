@@ -1,15 +1,17 @@
 import React from 'react';
 import { Button, ButtonGroup, Card, Image } from 'semantic-ui-react';
 import { activity } from '../../../app/models/activity';
+import { observer } from 'mobx-react-lite';
+import { useStore } from '../../../app/stores/store';
 
 
 interface Props {
     activity: activity;
-    cancelActivity: () => void;
-    FormOpen: (id?: string) => void;
-    FormClose: () => void;
 }
-export default function ActivityDetails({ activity, cancelActivity, FormOpen, FormClose }: Props) {
+function ActivityDetails({ activity, }: Props) {
+
+    const { activityStore } = useStore();
+    const { openForm, cancelselectedActivity } = activityStore;
     return (
         <Card fluid>
             <Image src={`assets/categoryImages/${activity.category}.jpg`} />
@@ -24,8 +26,8 @@ export default function ActivityDetails({ activity, cancelActivity, FormOpen, Fo
             </Card.Content>
             <Card.Content extra>
                 <ButtonGroup>
-                    <Button onClick={() => FormOpen(activity.id)} basic color='blue' content='Edit' />
-                    <Button onClick={() => cancelActivity()} basic color='grey' content='Cancel' />
+                    <Button onClick={() => openForm(activity.id)} basic color='blue' content='Edit' />
+                    <Button onClick={() => cancelselectedActivity()} basic color='grey' content='Cancel' />
                 </ButtonGroup>
 
             </Card.Content>
@@ -34,3 +36,5 @@ export default function ActivityDetails({ activity, cancelActivity, FormOpen, Fo
 
     )
 }
+
+export default observer(ActivityDetails)
