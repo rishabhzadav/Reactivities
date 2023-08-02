@@ -3,6 +3,10 @@ import { Button, Form, Segment } from "semantic-ui-react";
 import { activity } from "../../../app/models/activity";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../../../app/stores/store";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
+import LoadingComponent from "../../../app/layout/LoadingComponent";
+import { v4 as uuid } from 'uuid';
+import { link } from "fs";
 
 // interface Props {
 //     // activity: activity | undefined;
@@ -14,9 +18,9 @@ import { useStore } from "../../../app/stores/store";
 function ActivityForm() {
 
     const { activityStore } = useStore();
-    const { selectedActivity, closeForm, createActivity, updateActivity, loading } = activityStore
-
-    const initialState = selectedActivity ?? {
+    const { selectedActivity, createActivity, updateActivity, loading, loadingInitial, loadActivity } = activityStore
+    const navigate = useNavigate();
+    const initialState: activity = {
         id: "",
         title: "",
         date: "",
@@ -26,10 +30,22 @@ function ActivityForm() {
         venue: ""
     }
 
+    let { id } = useParams();
+    const [activity, setActivity] = useState<activity>(initialState);
+
+    // use ! to ignore typescript
+
+    useEffect(() => {
+        if (id) {
+            loadActivity(id).then(activity => setActivity(activity!));
+        }
+
+    }, [id, loadActivity])
+
     //const [myvalue, setValue] = useState(initialState);
     //console.log(` myvalue is ${myvalue.category}`);
 
-    const [activity, setActivity] = useState<activity>(initialState);
+
 
     console.log(`initial state is ${initialState.category}`);
 
@@ -40,9 +56,13 @@ function ActivityForm() {
     console.log(`activity state is ${activity.category}`);
     // console.log(activity.category);
     function handleSubmit() {
-        // console.log(activity);
-        console.log("my id is " + activity.id)
-        activity.id === "" ? createActivity(activity) : updateActivity(activity)
+        if (!activity.id) {
+            activity.id = uuid();
+            createActivity(activity).then(() => navigate(`/activities/${activity.id}`))
+        }
+        else {
+            updateActivity(activity).then(() => navigate(`/activities/${activity.id}`))
+        }
 
     }
     function handleInputChange(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
@@ -50,6 +70,9 @@ function ActivityForm() {
         setActivity({ ...activity, [name]: value })
     }
 
+
+
+    if (loadingInitial) return <LoadingComponent />
     return (
         <>
             {/* clearing tag clear all the css value  */}
@@ -62,7 +85,7 @@ function ActivityForm() {
                     <Form.Input placeholder="City" value={activity.city} name='city' onChange={handleInputChange} />
                     <Form.Input placeholder="Venue" value={activity.venue} name='venue' onChange={handleInputChange} />
                     <Button loading={loading} floated="right" positive content='Submit' type="submit" />
-                    <Button onClick={() => closeForm()} floated="right" content='Cancel' />
+                    <Button as={Link} to={`/activities/${activity.id}`} floated="right" content='Cancel' />
                 </Form>
             </Segment>
         </>

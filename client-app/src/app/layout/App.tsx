@@ -6,10 +6,14 @@ import ActivityDashboard from '../../features/activity/ActivityDashboard';
 import LoadingComponent from './LoadingComponent';
 import { useStore } from '../stores/store';
 import { observer } from 'mobx-react-lite';
+import { Outlet, useLocation } from 'react-router-dom';
+import { loadavg } from 'os';
+import Home from '../../features/Homes/Home';
 
 function App() {
 
   const [activities, setActivities] = useState<activity[]>([]);
+  
   //const [selectedActivity, setSelectedActivity] = useState<activity | undefined>(undefined);
   // const [editMode, setEditMode] = useState(false);
   // const [loading, setLoading] = useState(true);
@@ -17,21 +21,7 @@ function App() {
   const { activityStore } = useStore();
 
 
-  useEffect(() => {
-    // agent.Actitivities.list().then(response => {
-    // let activities: activity[] = [];
-    // response.forEach((data) => {
-    //   data.date = data.date.split("T")[0];
-    //   activities.push(data);
-    // })
-    // setActivities(activities);
-    // setLoading(false);
-    activityStore.loadingActivitiy();
-    // }).catch(
-    //   error => console.log(error)
-    // )
-  }, [activityStore]);
-
+ 
 
   // function handleSelectedActivity(id: string) {
   //   setSelectedActivity(activities.find(x => x.id === id));
@@ -81,21 +71,31 @@ function App() {
   //     setSubmitting(false);
   //   })
   // }
-
-  if (activityStore.loadingInitial) {
-    return <LoadingComponent content='loading app' />
+  let location = useLocation();
+  if(location.pathname === "/")
+  {
+      return (
+        <>
+          <Home/>
+        </>
+      )
   }
-  return (
-    <>
-      <NavBar />
-      <Container style={{ marginTop: '7em' }}>
-        {/* <h1> {activityStore.title}</h1>
-        <Button content='click to add !' onClick={activityStore.setTitle} /> */}
-        <ActivityDashboard />
-      </Container>
-
-    </>
-  );
+  else{
+    return (
+      <>
+        <NavBar />
+        <Container style={{ marginTop: '7em' }}>
+          {/* <h1> {activityStore.title}</h1>
+          <Button content='click to add !' onClick={activityStore.setTitle} /> */}
+          {/* <ActivityDashboard /> */}
+          {/*this help in redering child element*/}
+          <Outlet />
+        </Container>
+  
+      </>
+    );
+  }
+  
 }
 // we add app component in observer so that it can track the all the state of all changes
 export default observer(App);

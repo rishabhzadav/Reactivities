@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Grid, GridColumn, List } from 'semantic-ui-react';
 import { activity } from '../../app/models/activity';
 import ActivityList from './ActivityList';
@@ -6,6 +6,7 @@ import ActivityDetails from './details/ActivityDetails';
 import ActivityForm from './form/ActivityForm';
 import { useStore } from '../../app/stores/store';
 import { observer } from 'mobx-react-lite';
+import LoadingComponent from '../../app/layout/LoadingComponent';
 
 // creating inerface to access the props in the desired format 
 interface Props {
@@ -21,7 +22,30 @@ interface Props {
 }
 function ActivityDashboard() {
     const { activityStore } = useStore();
-    const { selectedActivity, editMode } = activityStore;
+    const { loadingActivities, activityRegister } = activityStore;
+
+    useEffect(() => {
+        // agent.Actitivities.list().then(response => {
+        // let activities: activity[] = [];
+        // response.forEach((data) => {
+        //   data.date = data.date.split("T")[0];
+        //   activities.push(data);
+        // })
+        // setActivities(activities);
+        // setLoading(false);
+        if (activityRegister.size <= 1) {
+            loadingActivities();
+        }
+
+        // }).catch(
+        //   error => console.log(error)
+        // )
+    }, [loadingActivities, activityRegister.size]);
+
+
+    if (activityStore.loadingInitial) {
+        return <LoadingComponent content='loading app' />
+    }
 
     return (
         <>
@@ -36,14 +60,14 @@ function ActivityDashboard() {
                     </List> */}
                     <ActivityList />
                 </GridColumn>
-                <GridColumn width={6}>
+                {/* <GridColumn width={6}>
                     {
                         selectedActivity && !editMode &&
-                        <ActivityDetails activity={selectedActivity} />
+                        <ActivityDetails />
                     }
                     {editMode &&
                         <ActivityForm />}
-                </GridColumn>
+                </GridColumn> */}
 
             </Grid>
 
